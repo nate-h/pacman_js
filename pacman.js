@@ -2042,9 +2042,7 @@ function keyboardInput(e) {
 
 	//see if game has started
 	if (startReset.start == true) {
-		console.log("Start the game to play!");
 		return;
-
 	}
 
 
