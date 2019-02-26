@@ -340,7 +340,7 @@ for (var i = 0; i < vertexCount; i++) {
     var n = vertices[i];
     var x = n.x;
     var y = n.y;
-    // --------going left
+    // Going left.
     while (true) {
         x--;
         if (x < 0) { break; }
@@ -349,7 +349,7 @@ for (var i = 0; i < vertexCount; i++) {
         if (vertLevel[x][y] != -1) { break; }
     }
     x = n.x;
-    // --------going up
+    // Going up.
     while (true) {
         y--;
         if (y < 0) { break; }
@@ -358,7 +358,7 @@ for (var i = 0; i < vertexCount; i++) {
         if (vertLevel[x][y] != -1) { break; }
     }
     y = n.y;
-    // --------going right
+    // Going right.
     while (true) {
         x++;
         if (x > s.cols - 1) { break; }
@@ -367,7 +367,7 @@ for (var i = 0; i < vertexCount; i++) {
         if (vertLevel[x][y] != -1) { break; }
     }
     x = n.x;
-    // --------going down
+    // Going down.
     while (true) {
         y++;
         if (y > s.rows - 1) { break; }
@@ -377,7 +377,7 @@ for (var i = 0; i < vertexCount; i++) {
     }
 }
 
-// now to find neighbors
+// Now to find neighbors.
 for (var i = 0; i < vertexCount; i++) {
     var n = vertices[i];
     var x = n.x;
@@ -431,7 +431,7 @@ level[6][5] = 2;
 //////////////////////////////////////////////////////////////////////////////
 
 function Pacman (xIn, yIn) {
-    // -public
+    // public
     this.x = xIn;
     this.y = yIn;
     this.w = 30;
@@ -835,7 +835,7 @@ function loadP () {
 
 ////////////////////////////   function main loop
 function mainLoop () {
-    // ---- logic
+    // Logic.
     move();
     if (redG.alive == true) {
         redG.moveGhost(1);
@@ -862,7 +862,7 @@ function mainLoop () {
     picState++;
     picGState++;
 
-    // ---- render
+    // Render.
     drawChanges();
 
     // test collision with ghost
@@ -992,8 +992,8 @@ function drawChanges () {
     c.drawImage(spacePic, xt3, yt3);
     c.drawImage(spacePic, xt4, yt4);
 
-    // ----------draw characters
-    // draw ghost
+    // Draw characters.
+    // Draw ghost.
     if (redG.alive == true) {
         redG.render();
     }
