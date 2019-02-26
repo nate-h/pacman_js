@@ -13,6 +13,8 @@
         "sourceType": "module"
     },
     "rules": {
-        "semi": [2, "always"]
+        "semi": ["error", "always"],
+        "spaced-comment": ["error", "never"],
+        "indent": ["error", 4]
     }
 }
