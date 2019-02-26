@@ -1,11 +1,11 @@
-/////////////////////////////////////////////////////////////////
-////////////////////////   PACMAN V.2  //////////////////////////
-///////////////   Created by Nathanial Hapeman   ////////////////
-/////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+// PACMAN V.2
+// Created by Nathanial Hapeman
+//////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////
-///////////////////////////   vars   /////////////////////////////
-//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+// Vars
+//////////////////////////////////////////////////////////////////////////////
 
 var s = {
     rows: 13,
@@ -34,7 +34,7 @@ var clock = {
     id: 0
 };
 
-//images
+// images
 var smallBG = new Image();
 smallBG.src = 'img/smallBG.png';
 var spacePic = new Image();
@@ -54,7 +54,7 @@ powerUpPic.src = 'img/powerUp.png';
 var gameOverPic = new Image();
 gameOverPic.src = 'img/gameOver.png';
 
-//sound effects
+// sound effects
 var pressB = new Audio('sounds/pressB.wav');
 var tada = new Audio('sounds/tada.wav');
 var introSound = new Audio('sounds/startUpPacman.wav');
@@ -65,7 +65,7 @@ var bgMusic = new Audio('sounds/bgMusic.mp3');
 var teleportSound = new Audio('sounds/teleport.wav');
 var powerUpSound = new Audio('sounds/powerUp.wav');
 
-//vars
+// vars
 var picChanges = [];
 var picChangesSize = 5;
 var c;
@@ -97,17 +97,17 @@ var yt2;
 var yt3;
 var yt4;
 
-//////////////////////////////////////////////////////////////////
-/////////////////////   Setting Up Level   ///////////////////////
-//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+// Setting Up Level
+//////////////////////////////////////////////////////////////////////////////
 
-//LEVEL KEY
-//-1 eaten food
-//0 wall
-//1 food
-//2 power ups
-//3 black hole
-//4 space
+// LEVEL KEY
+// -1 eaten food
+// 0 wall
+// 1 food
+// 2 power ups
+// 3 black hole
+// 4 space
 var level = [
     [-1, -1, -1, -1, -1, -1, -1, -1, -1, 3, -1, -1, -1],
     [-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1],
@@ -136,9 +136,9 @@ function Point (x, y) {
     this.y = y;
 }
 
-//////////////////////////////////////////////////////////////////
-//////////////////////////   Sorted Set   ////////////////////////
-//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+// Sorted Set
+//////////////////////////////////////////////////////////////////////////////
 
 function SortedSet () {
     this._length = 0;
@@ -146,28 +146,28 @@ function SortedSet () {
 }
 
 SortedSet.prototype.add = function (loc) {
-    //increment count
+    // increment count
     this._length++;
 
-    //create a new node, place data in
+    // create a new node, place data in
     var node = {
         loc: loc,
         next: null
     }; var current; var temp;
 
-    //special case: no items in the list yet
+    // special case: no items in the list yet
     if (this._head === null) {
         this._head = node;
     } else {
         current = this._head;
 
-        //dont add duplicate
+        // dont add duplicate
         if (node.loc == this._head.loc) {
             this._length--;
             return;
         }
 
-        //see if replace head
+        // see if replace head
         if (node.loc > this._head.loc) {
             temp = this._head;
             this._head = node;
@@ -175,7 +175,7 @@ SortedSet.prototype.add = function (loc) {
             return;
         }
 
-        //see if its next node after head
+        // see if its next node after head
         if (current.next === null) {
             current.next = node;
             return;
@@ -199,7 +199,7 @@ SortedSet.prototype.add = function (loc) {
             current = current.next;
         }
 
-        //gets here if tail
+        // gets here if tail
         if (node.loc == current.loc) {
             this._length--;
             return;
@@ -214,7 +214,7 @@ SortedSet.prototype.add = function (loc) {
 };
 
 SortedSet.prototype.item = function (index) {
-    //check if num is valid
+    // check if num is valid
     if (index > -1 && index < this._length) {
         var current = this._head;
         var i = 0;
@@ -243,49 +243,50 @@ SortedSet.prototype.print = function () {
     console.log('loc: ', current.loc);
 };
 
-SortedSet.prototype.remove = function (index) { //change to loc
-    //check for out-of-bounds values
+SortedSet.prototype.remove = function (index) { // change to loc
+    // check for out-of-bounds values
     if (index > -1 && index < this._length) {
         var current = this._head;
         var previous;
         var i = 0;
 
-        //special case: removing first item
+        // special case: removing first item
         if (index === 0) {
             this._head = current.next;
         } else {
-            //find the right location
+            // find the right location
             while (i++ < index) {
                 previous = current;
                 current = current.next;
             }
 
-            //skip over the item to remove
+            // skip over the item to remove
             previous.next = current.next;
         }
 
-        //decrement the length
+        // decrement the length
         this._length--;
 
-        //return the value
+        // return the value
         return current.data;
     } else {
         return null;
     }
 };
 
-//////////////////////////////////////////////////////////////////
-//////////////   Setting Up Dijkstra's Algorithm   ///////////////
-//////////////////////////////////////////////////////////////////
 
-//used for constant lookup time access
+//////////////////////////////////////////////////////////////////////////////
+// Setting Up Dijkstra's Algorithm
+//////////////////////////////////////////////////////////////////////////////
+
+// used for constant lookup time access
 var vertLevel = [];
-//stores vertexes
+// stores vertexes
 var vertices = [];
 var vertexCount = 0;
 
-//nodes holds the information of where the direction
-//could change in the map
+// nodes holds the information of where the direction
+// could change in the map
 function Node (x, y, loc) {
     this.x = x;
     this.y = y;
@@ -303,7 +304,7 @@ function Node (x, y, loc) {
     this.parent = -1;
 }
 
-//populate array with zeros
+// populate array with zeros
 for (var i = 0; i < s.cols; i++) {
     vertLevel[i] = new Array(s.rows);
 }
@@ -313,7 +314,7 @@ for (var i = 0; i < s.cols; i++) {
     }
 }
 
-//test if point is a vertex
+// test if point is a vertex
 function testVar (i, j) {
     if (level[i][j] == 1) {
         if (level[i][j + 1] == 1 || level[i][j - 1] == 1) {
@@ -322,7 +323,7 @@ function testVar (i, j) {
     }
     return false;
 }
-//iterate through vertexes to test
+// iterate through vertexes to test
 for (var i = 1; i < s.cols - 1; i++) {
     for (var j = 1; j < s.rows - 1; j++) {
         if (testVar(i, j)) {
@@ -330,16 +331,16 @@ for (var i = 1; i < s.cols - 1; i++) {
             vertices.push(new Node(i, j, vertexCount));
             vertexCount++;
         }
-    };
+    }
 }
 
-//finding the location of the neignoring nodes
-//relative to each node
+// finding the location of the neignoring nodes
+// relative to each node
 for (var i = 0; i < vertexCount; i++) {
     var n = vertices[i];
     var x = n.x;
     var y = n.y;
-    //--------going left
+    // --------going left
     while (true) {
         x--;
         if (x < 0) { break; }
@@ -348,7 +349,7 @@ for (var i = 0; i < vertexCount; i++) {
         if (vertLevel[x][y] != -1) { break; }
     }
     x = n.x;
-    //--------going up
+    // --------going up
     while (true) {
         y--;
         if (y < 0) { break; }
@@ -357,7 +358,7 @@ for (var i = 0; i < vertexCount; i++) {
         if (vertLevel[x][y] != -1) { break; }
     }
     y = n.y;
-    //--------going right
+    // --------going right
     while (true) {
         x++;
         if (x > s.cols - 1) { break; }
@@ -366,7 +367,7 @@ for (var i = 0; i < vertexCount; i++) {
         if (vertLevel[x][y] != -1) { break; }
     }
     x = n.x;
-    //--------going down
+    // --------going down
     while (true) {
         y++;
         if (y > s.rows - 1) { break; }
@@ -376,31 +377,31 @@ for (var i = 0; i < vertexCount; i++) {
     }
 }
 
-//now to find neighbors
+// now to find neighbors
 for (var i = 0; i < vertexCount; i++) {
     var n = vertices[i];
     var x = n.x;
     var y = n.y;
 
-    //find n1
+    // find n1
     if (n.edge1 == 0) {
         n.n1 = -1;
     } else {
         n.n1 = vertLevel[n.x - n.edge1][n.y];
     }
-    //find n2
+    // find n2
     if (n.edge2 == 0) {
         n.n2 = -1;
     } else {
         n.n2 = vertLevel[n.x][n.y - n.edge2];
     }
-    //find n3
+    // find n3
     if (n.edge3 == 0) {
         n.n3 = -1;
     } else {
         n.n3 = vertLevel[n.x + n.edge3][n.y];
     }
-    //find n4
+    // find n4
     if (n.edge4 == 0) {
         n.n4 = -1;
     } else {
@@ -408,7 +409,7 @@ for (var i = 0; i < vertexCount; i++) {
     }
 }
 
-//used for dijkstras algorithm
+// used for dijkstras algorithm
 function resetVertices () {
     for (var i = 0; i < vertexCount; i++) {
         vertices[i].visited = false;
@@ -417,19 +418,20 @@ function resetVertices () {
     }
 }
 
-//hack to reduce if/else statements in dijkstra's
-//power ups
+// hack to reduce if/else statements in dijkstra's
+// power ups
 level[4][9] = 2;
 level[15][3] = 2;
 level[13][7] = 2;
 level[6][5] = 2;
 
-//////////////////////////////////////////////////////////////////
-/////////////////   Pacman Class Declaration   ///////////////////
-//////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////
+// Pacman Class Declaration
+//////////////////////////////////////////////////////////////////////////////
 
 function Pacman (xIn, yIn) {
-    //--------public
+    // -public
     this.x = xIn;
     this.y = yIn;
     this.w = 30;
@@ -437,13 +439,13 @@ function Pacman (xIn, yIn) {
     this.direction = 3;
     this.attackTimer = 0;
 
-    //--------private
+    // private
 
     var lives = 3;
     var startX = xIn;
     var startY = yIn;
     var alive = true;
-    //used for regular movement
+    // used for regular movement
     var pic1 = new Image();
     pic1.src = 'img/pacman1.png';
     var pic2 = new Image();
@@ -452,7 +454,7 @@ function Pacman (xIn, yIn) {
     pic3.src = 'img/pacman3.png';
     var pic4 = new Image();
     pic4.src = 'img/pacman4.png';
-    //used for power ups
+    // used for power ups
     var pic1s = new Image();
     pic1s.src = 'img/pacman1s.png';
     var pic2s = new Image();
@@ -461,15 +463,15 @@ function Pacman (xIn, yIn) {
     pic3s.src = 'img/pacman3s.png';
     var pic4s = new Image();
     pic4s.src = 'img/pacman4s.png';
-    //live indicator
+    // live indicator
     var miniPacman = new Image();
     miniPacman.src = 'img/miniPacman.png';
 
-    //-----------------------------------functions
+    // functions
 
-    //if pacman dies
+    // if pacman dies
     this.die = function () {
-    //reset ghost
+    // reset ghost
         redG.reset();
         pinkG.reset();
         blueG.reset();
@@ -487,7 +489,7 @@ function Pacman (xIn, yIn) {
         drawCanvas();
     };
 
-    //used to calcuate where ghost should move
+    // used to calcuate where ghost should move
     this.getNearestNode = function () {
         switch (moveState) {
         case 1:
@@ -536,7 +538,7 @@ function Pacman (xIn, yIn) {
         return 0;
     };
 
-    //reset game
+    // reset game
     this.reset = function () {
         redG.reset();
         pinkG.reset();
@@ -549,7 +551,7 @@ function Pacman (xIn, yIn) {
         this.attackTimer = 0;
     };
 
-    //test collision with ghost
+    // test collision with ghost
     this.collisionTest = function (boundary) {
         if (boundary.x + 1 < this.x) { return false; }
         if (boundary.x > this.x + 1) { return false; }
@@ -558,7 +560,7 @@ function Pacman (xIn, yIn) {
         return true;
     };
 
-    //what to do when collision
+    // what to do when collision
     this.collisionAction = function (ghost) {
         if (ghost.alive == true && this.collisionTest(ghost) == true) {
             if (pacman.attackTimer == 0) {
@@ -576,7 +578,7 @@ function Pacman (xIn, yIn) {
         }
     };
 
-    //which ghost should test collision with
+    // which ghost should test collision with
     this.collisionWithGhost = function () {
         this.collisionAction(redG);
         this.collisionAction(pinkG);
@@ -584,7 +586,7 @@ function Pacman (xIn, yIn) {
         this.collisionAction(orangeG);
     };
 
-    //display pacman
+    // display pacman
     this.render = function () {
         var px = pacman.x * s.width + s.shiftX;
         var py = pacman.y * s.height + s.shiftY;
@@ -667,7 +669,7 @@ function Pacman (xIn, yIn) {
         }
     };
 
-    //show how many lives pacman has
+    // show how many lives pacman has
     this.renderLives = function () {
         switch (lives) {
         case 1:
@@ -687,10 +689,10 @@ function Pacman (xIn, yIn) {
         }
     };
 }
-//pacman declaration
+// pacman declaration
 var pacman = new Pacman(1, 1);
 
-//helper functions
+// helper functions
 function realX (x) {
     return x * s.width + s.shiftX;
 }
@@ -699,16 +701,16 @@ function realY (y) {
     return y * s.height + s.shiftY;
 }
 
-//////////////////////////////////////////////////////////////////
-/////////////////   Ghost Class Declaration   ////////////////////
-//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+// Ghost Class Declaration
+//////////////////////////////////////////////////////////////////////////////
 
 var picGState = 12;
 var inDangerPic = new Image();
 inDangerPic.src = 'img/ghost.png';
 
 function Ghost (picLoc, id) {
-    //public
+    // public
     this.alive = true;
     this.x = 0;
     this.y = 0;
@@ -724,7 +726,7 @@ function Ghost (picLoc, id) {
     this.howManyMoves = 0;
     this.path = new Array();
 
-    //private
+    // private
     var direction = 0;
     var isMoving = false;
     var startX = x;
@@ -732,9 +734,9 @@ function Ghost (picLoc, id) {
     var pic = new Image();
     pic.src = picLoc;
 
-    //functions
+    // functions
     this.render = function () {
-    //ghost is in danger
+    // ghost is in danger
         if (this.inDanger == true) {
             var tempLoc = 30 * (Math.floor(picGState / 6) % 2);
             var rx = this.x * s.width + s.shiftX;
@@ -742,23 +744,23 @@ function Ghost (picLoc, id) {
             c.drawImage(inDangerPic, tempLoc, 0, 30, 30, rx, ry, 30, 30);
             return;
         }
-        //if ghost is not in danger
+        // if ghost is not in danger
         if (this.moveState != 0) { var tempLoc = 30 * (Math.floor(picGState / 6) % 2) + (this.moveState - 1) * 2 * 30; } else { var tempLoc = 30 * (Math.floor(picGState / 6) % 2) + (this.lastState - 1) * 2 * 30; }
         var rx = this.x * s.width + s.shiftX;
         var ry = this.y * s.height + s.shiftY;
         c.drawImage(pic, tempLoc, 0, 30, 30, rx, ry, 30, 30);
     };
 
-    //start location for ghost
+    // start location for ghost
     this.chooseLoc = function (locIn) {
-    //this.lastNode = Math.floor((Math.random() * vertexCount));
+    // this.lastNode = Math.floor((Math.random() * vertexCount));
         this.lastNode = locIn;
         var node = vertices[this.lastNode];
         this.x = node.x;
         this.y = node.y;
     };
 
-    //used to reset ghost
+    // used to reset ghost
     this.reset = function () {
         this.howManyMoves = 0;
         this.moves = 0;
@@ -771,7 +773,7 @@ function Ghost (picLoc, id) {
         this.chooseLoc(Math.floor(Math.random() * (vertexCount - 10)) + 10);
     };
 
-    //if ghost dies
+    // if ghost dies
     this.die = function () {
         this.howManyMoves = 0;
         this.alive = false;
@@ -780,24 +782,26 @@ function Ghost (picLoc, id) {
     };
 }
 
-//declare ghost
+// declare ghost
 var redG = new Ghost('img/redG.png', 1);
 var pinkG = new Ghost('img/pinkG.png', 2);
 var blueG = new Ghost('img/blueG.png', 3);
 var orangeG = new Ghost('img/orangeG.png', 4);
 
-//chose their locations
+// chose their locations
 redG.chooseLoc(13);
 blueG.chooseLoc(19);
 pinkG.chooseLoc(22);
 orangeG.chooseLoc(34);
 
-//////////////////////////////////////////////////////////////////
-/////////////////////   Heart of Program   ///////////////////////
-//////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////
+// Heart of Program
+//////////////////////////////////////////////////////////////////////////////
+
 window.addEventListener('load', loadP);
 function loadP () {
-    //declaring canvas
+    // declaring canvas
     canvas = document.getElementById('gCanvas');
     canvas.addEventListener('mouseup', mouseInput, false);
     window.addEventListener('keydown', keyboardInput, false);
@@ -807,16 +811,16 @@ function loadP () {
         return false;
     };
 
-    //giving it style
+    // giving it style
     c = canvas.getContext('2d');
     c.font = 'bold 18px verdana, sans-serif ';
     c.fillStyle = '#ffffff';
 
-    //pushing map
+    // pushing map
     s.shiftX = (canvasW - mapW) / 2;
     s.shiftY = (canvasH - mapH) - 40;
 
-    //declaring teleport locations
+    // declaring teleport locations
     xt1 = realX(s.cols - 1) - 4;
     xt2 = realX(15) - 4;
     xt3 = realX(0) - 4;
@@ -831,7 +835,7 @@ function loadP () {
 
 ////////////////////////////   function main loop
 function mainLoop () {
-    //---- logic
+    // ---- logic
     move();
     if (redG.alive == true) {
         redG.moveGhost(1);
@@ -846,22 +850,22 @@ function mainLoop () {
         orangeG.moveGhost(4);
     }
 
-    //I dont render whole map every game iteration
-    //rather only the parts where movement takes place
+    // I dont render whole map every game iteration
+    // rather only the parts where movement takes place
     picChanges.push(new Point(pacman.x, pacman.y));
     picChanges.push(new Point(redG.x, redG.y));
     picChanges.push(new Point(pinkG.x, pinkG.y));
     picChanges.push(new Point(blueG.x, blueG.y));
     picChanges.push(new Point(orangeG.x, orangeG.y));
 
-    //used for sprites
+    // used for sprites
     picState++;
     picGState++;
 
-    //---- render
+    // ---- render
     drawChanges();
 
-    //test collision with ghost
+    // test collision with ghost
     pacman.collisionWithGhost();
 }
 
@@ -884,11 +888,12 @@ function timer () {
     }
 }
 
-//////////////////////////////////////////////////////////////////
-///////////////////////   rendering   ////////////////////////////
-//////////////////////////////////////////////////////////////////
 
-//---------------draw full canvas
+//////////////////////////////////////////////////////////////////////////////
+// Rendering
+//////////////////////////////////////////////////////////////////////////////
+
+// draw full canvas
 function drawCanvas () {
     c.fillStyle = 'rgba( 38, 138,208,1)';
     c.fillRect(0, 0, 600, 450);
@@ -907,7 +912,7 @@ function drawCanvas () {
     c.fillRect(27, 363, 546, 1);
     c.fillRect(573, 27, 1, 336);
 
-    //draw teleports pictures   --- should I change?
+    // draw teleports pictures   --- should I change?
     c.fillRect(xt1 + 8, yt1 - 1, 30, 1);
     c.fillRect(xt1 + 8, yt1 + 38, 30, 1);
     c.fillRect(xt2 - 1, yt2 + 8, 1, 30);
@@ -922,8 +927,8 @@ function drawCanvas () {
     c.drawImage(spacePic, xt3, yt3);
     c.drawImage(spacePic, xt4, yt4);
 
-    //----------draw characters
-    //draw ghost
+    // draw characters
+    // draw ghost
     if (redG.alive == true) {
         redG.render();
     }
@@ -937,15 +942,15 @@ function drawCanvas () {
         orangeG.render();
     }
 
-    //pacman
+    // pacman
     pacman.render();
     pacman.renderLives();
 
-    //draws whole bottom
+    // draws whole bottom
     drawBottom();
 }
 
-//-----------  draw only changes
+// draw only changes
 function drawChanges () {
     c.fillStyle = 'rgba( 0, 0, 0,1)';
     for (var k = 0; k < picChangesSize; k++) {
@@ -969,7 +974,7 @@ function drawChanges () {
     c.fillRect(27, 363, 546, 1);
     c.fillRect(573, 27, 1, 336);
 
-    //draw teleports
+    // draw teleports
     c.fillRect(xt1 + 8, yt1 - 1, 30, 1);
     c.fillRect(xt1 + 8, yt1 + 38, 30, 1);
 
@@ -987,8 +992,8 @@ function drawChanges () {
     c.drawImage(spacePic, xt3, yt3);
     c.drawImage(spacePic, xt4, yt4);
 
-    //----------draw characters
-    //draw ghost
+    // ----------draw characters
+    // draw ghost
     if (redG.alive == true) {
         redG.render();
     }
@@ -1002,15 +1007,15 @@ function drawChanges () {
         orangeG.render();
     }
 
-    //pacman
+    // pacman
     pacman.render();
     pacman.renderLives();
 
-    //draw bottom of level
+    // draw bottom of level
     drawBottomChanges();
 }
 
-//used to see what box to render
+// used to see what box to render
 function drawBox2 (i, j, x, y) {
     if (level[i][j] == -1) {
         c.fillRect(x, y, 30, 30);
@@ -1023,7 +1028,7 @@ function drawBox2 (i, j, x, y) {
     }
 }
 
-//used to see what box to display
+// used to see what box to display
 function drawBox (i, j, x, y) {
     if (level[i][j] == -1) {
         c.drawImage(spacePic, x - 4, y - 4);
@@ -1036,60 +1041,61 @@ function drawBox (i, j, x, y) {
     }
 }
 
-//draws only bottom changes live score and clock
+// draws only bottom changes live score and clock
 function drawBottomChanges () {
     c.drawImage(smallBG, clock.x, 390);
 
     c.fillStyle = 'rgba( 255, 255, 255,1)';
-    //draw time
+    // draw time
     c.drawImage(clockPic, clock.x, clock.y);
     c.fillText(clock.time, clock.x + 35, clock.y + 20);
 
-    //draw score
+    // draw score
     c.fillText('%', 525, clock.y + 19);
     var percent = Math.floor((s.score) / 119 * 100);
     c.fillText(percent, 555, clock.y + 19);
 }
 
-//draw all of bottom
+// draw all of bottom
 function drawBottom () {
-    //setup bottom
+    // setup bottom
     c.drawImage(bg, 0, 390);
     c.fillStyle = 'rgba(255,255, 255,1)';
 
-    //add start buttons
+    // add start buttons
     if (startReset.start == true) {
         c.drawImage(startPic, startReset.x, startReset.y);
     } else {
         c.drawImage(resetPic, startReset.x, startReset.y);
     }
 
-    //draw time
+    // draw time
     c.drawImage(clockPic, clock.x, clock.y);
     c.fillText(clock.time, clock.x + 35, clock.y + 20);
 
-    //draw score
+    // draw score
     c.fillText('%', 525, clock.y + 19);
     var percent = Math.floor((s.score) / 119 * 100);
     c.fillText(percent, 555, clock.y + 19);
 }
 
-//////////////////////////////////////////////////////////////////
-///////////////////   winning / losing   /////////////////////////
-//////////////////////////////////////////////////////////////////
 
-//reset game main function
+//////////////////////////////////////////////////////////////////////////////
+// Winning / Losing
+//////////////////////////////////////////////////////////////////////////////
+
+// reset game main function
 function resetGame () {
     clearInterval(clock.id);
     clearInterval(mainId);
     clock.time = 0;
 
-    //-1 eaten food
-    //0 wall
-    //1 food
-    //2 power up
-    //3 black hole
-    //4 space
+    // -1 eaten food
+    // 0 wall
+    // 1 food
+    // 2 power up
+    // 3 black hole
+    // 4 space
     level = [
         [-1, -1, -1, -1, -1, -1, -1, -1, -1, 3, -1, -1, -1],
         [-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1],
@@ -1117,7 +1123,7 @@ function resetGame () {
     level[13][7] = 2;
     level[6][5] = 2;
 
-    //reset everything else
+    // reset everything else
     bgMusic.pause();
     picState = 12;
     moveState = 3;
@@ -1128,11 +1134,11 @@ function resetGame () {
     bgMusic.currentTime = 0;
     vel = 0.125;
 
-    //render changes
+    // render changes
     drawCanvas();
 }
 
-//lose   do I use this?
+// lose   do I use this?
 function lose () {
     console.log('You Lost! :(');
     startReset.start = false;
@@ -1147,29 +1153,29 @@ function lose () {
 }
 
 function winning () {
-    //stop game from running
+    // stop game from running
     startReset.start = false;
     clearInterval(clock.id);
     clearInterval(mainId);
 
-    //play sounds
+    // play sounds
     bgMusic.pause();
     tada.play();
 
-    //reset pacman's spirte picture state
+    // reset pacman's spirte picture state
     picState = 12;
 
-    //render changes
+    // render changes
     drawCanvas();
 }
 
-//////////////////////////////////////////////////////////////////
-/////////////////////////   Moving   /////////////////////////////
-//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+// Moving.
+//////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////// click pass
+// click pass
 function move () {
-    //get pacman's location info
+    // get pacman's location info
     var x = pacman.x;
     var y = pacman.y;
     var xu = Math.ceil(pacman.x);
@@ -1177,24 +1183,24 @@ function move () {
     var xd = Math.floor(pacman.x);
     var yd = Math.floor(pacman.y);
 
-    //should pacman be teleported
+    // should pacman be teleported
     testIfTeleport(x, y);
 
-    /////////////// if changing direction
+    // if changing direction
     if (nextState != moveState) {
         switch (nextState) {
         case 1:
-        //don't move on non int value
+        // don't move on non int value
             if (y % 1 != 0) {
                 break;
             }
-            //changing from right to left
+            // changing from right to left
             if (x % 1 != 0) {
                 pacman.x -= vel;
                 moveState = nextState;
                 return;
             }
-            //changing from vertical to horizontal
+            // changing from vertical to horizontal
             if (!(level[x - 1][yu] <= 0 || level[x - 1][yd] <= 0)) {
                 moveState = nextState;
                 pacman.x -= vel;
@@ -1204,17 +1210,17 @@ function move () {
             break;
 
         case 2:
-        //don't move on non int value
+        // don't move on non int value
             if (x % 1 != 0) {
                 break;
             }
-            //changing from right to left
+            // changing from right to left
             if (y % 1 != 0) {
                 pacman.y -= vel;
                 moveState = nextState;
                 return;
             }
-            //changing from vertical to horizontal
+            // changing from vertical to horizontal
             if (!(yu <= 0 || level[xu][y - 1] <= 0 || level[xd][y - 1] <= 0)) {
                 moveState = nextState;
                 pacman.y -= vel;
@@ -1224,17 +1230,17 @@ function move () {
             break;
 
         case 3:
-        //don't move on non int value
+        // don't move on non int value
             if (y % 1 != 0) {
                 break;
             }
-            //changing from right to left
+            // changing from right to left
             if (x % 1 != 0) {
                 pacman.x += vel;
                 moveState = nextState;
                 return;
             }
-            //changing from vertical to horizontal
+            // changing from vertical to horizontal
             if (!(xd >= s.cols - 1 || level[x + 1][yd] <= 0 || level[x + 1][yu] <= 0)) {
                 moveState = nextState;
                 pacman.x += vel;
@@ -1244,17 +1250,17 @@ function move () {
             break;
 
         case 4:
-        //don't move on non int value
+        // don't move on non int value
             if (x % 1 != 0) {
                 break;
             }
-            //changing from right to left
+            // changing from right to left
             if (y % 1 != 0) {
                 pacman.y += vel;
                 moveState = nextState;
                 return;
             }
-            //changing from vertical to horizontal
+            // changing from vertical to horizontal
             if (!(yd >= s.rows - 1 || level[xd][y + 1] <= 0 || level[xu][y + 1] <= 0)) {
                 moveState = nextState;
                 pacman.y += vel;
@@ -1267,9 +1273,9 @@ function move () {
 
     if (moveState == 0) { return; }
 
-    /////////////// testing if pacman can still move
+    // testing if pacman can still move
     switch (moveState) {
-    ////////////// a pressed
+    // a pressed
     case 1:
         if (x % 1 != 0) {
             pacman.x -= vel;
@@ -1291,7 +1297,7 @@ function move () {
         pacman.x -= vel;
         break;
 
-        //////////////// w pressed
+        // w pressed
     case 2:
         if (y % 1 != 0) {
             pacman.y -= vel;
@@ -1306,14 +1312,14 @@ function move () {
         pacman.y -= vel;
         break;
 
-        /////////////////////// d pressed
+        // d pressed
     case 3:
         if (x % 1 != 0) {
             pacman.x += vel;
             return;
         }
         if (xu == s.cols - 1) {
-        //added for array
+        // added for array
             eatFood();
 
             if (x + vel <= s.cols - 1) {
@@ -1332,7 +1338,7 @@ function move () {
         pacman.x += vel;
         break;
 
-        /////////////////////////  s pressed
+        // s pressed
     case 4:
         if (y % 1 != 0) {
             pacman.y += vel;
@@ -1350,13 +1356,13 @@ function move () {
         console.log("This shouldn't display move!");
     }
 
-    //test if eat food or power up
+    // test if eat food or power up
     eatFood();
 }
 
-//////////////////////////   test if teleport
+// test if teleport
 function testIfTeleport (x, y) {
-    //see if teleport
+    // see if teleport
     if (x == 0 || y == 0 || y == s.rows - 1 || x == s.cols - 1) {
         if (y == 9 && moveState == 1) {
             teleportSound.play();
@@ -1386,7 +1392,7 @@ function testIfTeleport (x, y) {
     }
 }
 
-/////////////////   test if eat food or power up
+// test if eat food or power up
 function eatFood () {
     switch (moveState) {
     case 1:
@@ -1436,19 +1442,20 @@ function eatFood () {
     }
 }
 
-//////////////////////////////////////////////////////////////////
-/////////////////////   Moving For Ghost   ///////////////////////
-//////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////
+// Moving For Ghost.
+//////////////////////////////////////////////////////////////////////////////
 
 Ghost.prototype.moveGhost = function (gID) {
     if (this.moves > 0) {
         this.moveMe();
     } else {
-    //vertices holds    use vertlevel to get node
-    //pick direction to go from nodes at random
-    //find out number of moves it would take
-    //up date moves and lastnode
-    //then move
+    // vertices holds    use vertlevel to get node
+    // pick direction to go from nodes at random
+    // find out number of moves it would take
+    // up date moves and lastnode
+    // then move
 
         if (gID > 2) {
             this.getRandomMove();
@@ -1461,33 +1468,33 @@ Ghost.prototype.moveGhost = function (gID) {
             }
 
             if (this.path.length == 0) {
-                //calculate next several moves
+                // calculate next several moves
                 this.calculateMoves(gID);
 
-                //could be zero moves
+                // could be zero moves
                 if (this.path.length == 0) {
                     return;
                 }
 
-                //get moves and direction
+                // get moves and direction
                 this.getMandD();
 
-                //get and remove last element location
+                // get and remove last element location
                 this.lastNode = this.path.pop();
             } else {
-                //get moves and direction
+                // get moves and direction
                 this.getMandD();
 
-                //get and remove last element location
+                // get and remove last element location
                 this.lastNode = this.path.pop();
             }
         }
     }
 };
 
-//get moves and direction for ghost
+// get moves and direction for ghost
 Ghost.prototype.getMandD = function () {
-    //calulate moves direction
+    // calulate moves direction
     var next = vertices[this.path[this.path.length - 1]];
     if (next.n1 != -1 && next.n1 == this.lastNode) {
         this.moves = vertices[next.n1].edge3 / velG;
@@ -1504,13 +1511,13 @@ Ghost.prototype.getMandD = function () {
     }
 };
 
-//used for certain ghost to move randomly
+// used for certain ghost to move randomly
 Ghost.prototype.getRandomMove = function (gID) {
     var tryThis;
     var wholeVal;
 
     while (true) {
-    //generate next location and test validity
+    // generate next location and test validity
         tryThis = Math.floor((Math.random() * 4)) + 1;
         switch (tryThis) {
         case 1:
@@ -1526,7 +1533,7 @@ Ghost.prototype.getRandomMove = function (gID) {
             wholeVal = vertices[this.lastNode].edge4;
             break;
         }
-        //test if moving backwards
+        // test if moving backwards
         var lastDir;
         switch (this.direction) {
         case 1:
@@ -1548,11 +1555,11 @@ Ghost.prototype.getRandomMove = function (gID) {
         }
     }
 
-    //get number of moves
+    // get number of moves
     this.moves = wholeVal / velG;
-    //update direction
+    // update direction
     this.direction = tryThis;
-    //setting next node
+    // setting next node
     var x = vertices[this.lastNode].x;
     var y = vertices[this.lastNode].y;
     switch (this.direction) {
@@ -1571,28 +1578,28 @@ Ghost.prototype.getRandomMove = function (gID) {
     }
 };
 
-//for this function I use dijkstra's algorithm to calcuate
-//the next several moves for any ghost calling the function
+// for this function I use dijkstra's algorithm to calcuate
+// the next several moves for any ghost calling the function
 Ghost.prototype.calculateMoves = function (gID) {
     resetVertices();
     var nearestNode = pacman.getNearestNode();
 
-    //create new list
+    // create new list
     var set = new SortedSet();
 
-    //used to iterate over values
-    //this.lastNode is start node
+    // used to iterate over values
+    // this.lastNode is start node
     vertices[this.lastNode].value = 0;
     var current = this.lastNode;
 
-    //mark begining node
+    // mark begining node
     vertices[current].visited = true;
     vertices[current].value = 0;
 
     for (var i = 0; i < vertexCount; i++) {
         if (current == nearestNode) { break; }
 
-        //see which node testing
+        // see which node testing
         var n = vertices[current];
 
         if (n.n1 != -1 && vertices[n.n1].visited == false) {
@@ -1629,7 +1636,7 @@ Ghost.prototype.calculateMoves = function (gID) {
             set.add(n.n4);
         }
 
-        //now to find smallest value
+        // now to find smallest value
         var min = 10000;
         var removeMe;
         for (var j = 0; j < set._length; j++) {
@@ -1644,7 +1651,7 @@ Ghost.prototype.calculateMoves = function (gID) {
         set.remove(removeMe);
     }
 
-    //now to trace back
+    // now to trace back
     var itter = nearestNode;
     while (true) {
         if (itter == this.lastNode) { break; }
@@ -1672,11 +1679,11 @@ Ghost.prototype.moveMe = function () {
     }
 };
 
-//////////////////////////   test if teleport
+// test if teleport
 Ghost.prototype.testIfTeleportG = function () {
     var x = this.x;
     var y = this.y;
-    //see if teleport
+    // see if teleport
     if (x == 0 || y == 0 || y == s.rows - 1 || x == s.cols - 1) {
         if (y == 9 && this.moveState == 1) {
             this.x = s.cols - 1;
@@ -1702,9 +1709,10 @@ Ghost.prototype.testIfTeleportG = function () {
     }
 };
 
-//////////////////////////////////////////////////////////////////
-//////////////////   Ghost Pacman Collision   ////////////////////
-//////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////
+// Ghost Pacman Collision.
+//////////////////////////////////////////////////////////////////////////////
 
 function collision (boundary, x, y) {
     if (boundary.x + boundary.w < x) { return false; }
@@ -1715,11 +1723,12 @@ function collision (boundary, x, y) {
     return true;
 }
 
-//////////////////////////////////////////////////////////////////
-/////////////////////   Mouse / Keyboard   ///////////////////////
-//////////////////////////////////////////////////////////////////
 
-////////////////////////////////////  get actual position
+//////////////////////////////////////////////////////////////////////////////
+// Mouse / Keyboard.
+//////////////////////////////////////////////////////////////////////////////
+
+//  get actual position
 function getMousePos (canvas, evt) {
     var rect = canvas.getBoundingClientRect();
     return {
@@ -1728,13 +1737,13 @@ function getMousePos (canvas, evt) {
     };
 }
 
-//////////////////////////////////// onclick
+// onclick
 function mouseInput (e) {
     var pos = getMousePos(canvas, e);
     mX = pos.x - s.shiftX;
     mY = pos.y - s.shiftY;
 
-    //see if click on button
+    // see if click on button
     if (collision(startReset, pos.x, pos.y) == true) {
         if (startReset.start == true) {
             clock.id = setInterval(timer, 1000);
@@ -1752,36 +1761,36 @@ function mouseInput (e) {
     }
 }
 
-///////////////////////////    keyboard input
+//    keyboard input
 
 function keyboardInput (e) {
-    //start game with button or by pressing "m"
-    //if (e.keyCode == 77) {
-    //if (startReset.start == true) {
-    //console.log('Start Game');
-    //clock.id = setInterval(timer, 1000);
-    //clock.time++;
-    //mainId = setInterval(mainLoop, 30);
-    //startReset.start = false;
-    //bgMusic.play();
-    //pressB.play();
-    //} else {
-    //bgMusic.pause();
-    //console.log('Reset Game');
-    //startReset.start = true;
-    //resetGame();
-    //pressB.play();
-    //}
-    //drawCanvas();
-    //return;
-    //}
+    // start game with button or by pressing "m"
+    // if (e.keyCode == 77) {
+    // if (startReset.start == true) {
+    // console.log('Start Game');
+    // clock.id = setInterval(timer, 1000);
+    // clock.time++;
+    // mainId = setInterval(mainLoop, 30);
+    // startReset.start = false;
+    // bgMusic.play();
+    // pressB.play();
+    // } else {
+    // bgMusic.pause();
+    // console.log('Reset Game');
+    // startReset.start = true;
+    // resetGame();
+    // pressB.play();
+    // }
+    // drawCanvas();
+    // return;
+    // }
 
-    //see if game has started
+    // see if game has started
     if (startReset.start == true) {
         return;
     }
 
-    //set which way pacman should move next (when can)
+    // set which way pacman should move next (when can)
     var code = e.keyCode;
     switch (code) {
     case 65:

@@ -14,7 +14,7 @@
     },
     "rules": {
         "semi": ["error", "always"],
-        "spaced-comment": ["error", "never"],
+        "spaced-comment": ["off", "never"],
         "indent": ["error", 4]
     }
 }
