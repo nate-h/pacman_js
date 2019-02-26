@@ -1,0 +1,28 @@
+{
+  "name": "pacman_js",
+  "version": "1.0.0",
+  "description": "Javascript Pacman implementation",
+  "main": "pacman.js",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^5.14.1",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nate-h/pacman_js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nate-h/pacman_js/issues"
+  },
+  "homepage": "https://github.com/nate-h/pacman_js#readme"
+}
