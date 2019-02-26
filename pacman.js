@@ -57,7 +57,6 @@ gameOverPic.src = 'img/gameOver.png';
 // sound effects
 var pressB = new Audio('sounds/pressB.wav');
 var tada = new Audio('sounds/tada.wav');
-var introSound = new Audio('sounds/startUpPacman.wav');
 var chompSound = new Audio('sounds/pacman_chomp.wav');
 var deathSound = new Audio('sounds/pacman_death.wav');
 var eatGhostSound = new Audio('sounds/pacman_eatghost.wav');
@@ -162,7 +161,7 @@ SortedSet.prototype.add = function (loc) {
         current = this._head;
 
         // dont add duplicate
-        if (node.loc == this._head.loc) {
+        if (node.loc === this._head.loc) {
             this._length--;
             return;
         }
@@ -184,7 +183,7 @@ SortedSet.prototype.add = function (loc) {
         current = current.next;
 
         while (current.next) {
-            if (node.loc == current.loc) {
+            if (node.loc === current.loc) {
                 this._length--;
                 return;
             }
@@ -200,7 +199,7 @@ SortedSet.prototype.add = function (loc) {
         }
 
         // gets here if tail
-        if (node.loc == current.loc) {
+        if (node.loc === current.loc) {
             this._length--;
             return;
         }
@@ -274,7 +273,6 @@ SortedSet.prototype.remove = function (index) { // change to loc
     }
 };
 
-
 //////////////////////////////////////////////////////////////////////////////
 // Setting Up Dijkstra's Algorithm
 //////////////////////////////////////////////////////////////////////////////
@@ -316,16 +314,16 @@ for (var i = 0; i < s.cols; i++) {
 
 // test if point is a vertex
 function testVar (i, j) {
-    if (level[i][j] == 1) {
-        if (level[i][j + 1] == 1 || level[i][j - 1] == 1) {
-            if (level[i + 1][j] == 1 || level[i - 1][j] == 1) { return true; }
+    if (level[i][j] === 1) {
+        if (level[i][j + 1] === 1 || level[i][j - 1] === 1) {
+            if (level[i + 1][j] === 1 || level[i - 1][j] === 1) { return true; }
         }
     }
     return false;
 }
 // iterate through vertexes to test
-for (var i = 1; i < s.cols - 1; i++) {
-    for (var j = 1; j < s.rows - 1; j++) {
+for (let i = 1; i < s.cols - 1; i++) {
+    for (let j = 1; j < s.rows - 1; j++) {
         if (testVar(i, j)) {
             vertLevel[i][j] = vertexCount;
             vertices.push(new Node(i, j, vertexCount));
@@ -336,7 +334,7 @@ for (var i = 1; i < s.cols - 1; i++) {
 
 // finding the location of the neignoring nodes
 // relative to each node
-for (var i = 0; i < vertexCount; i++) {
+for (let i = 0; i < vertexCount; i++) {
     var n = vertices[i];
     var x = n.x;
     var y = n.y;
@@ -344,36 +342,36 @@ for (var i = 0; i < vertexCount; i++) {
     while (true) {
         x--;
         if (x < 0) { break; }
-        if (level[x][y] != 1) { break; }
+        if (level[x][y] !== 1) { break; }
         n.edge1++;
-        if (vertLevel[x][y] != -1) { break; }
+        if (vertLevel[x][y] !== -1) { break; }
     }
     x = n.x;
     // Going up.
     while (true) {
         y--;
         if (y < 0) { break; }
-        if (level[x][y] != 1) { break; }
+        if (level[x][y] !== 1) { break; }
         n.edge2++;
-        if (vertLevel[x][y] != -1) { break; }
+        if (vertLevel[x][y] !== -1) { break; }
     }
     y = n.y;
     // Going right.
     while (true) {
         x++;
         if (x > s.cols - 1) { break; }
-        if (level[x][y] != 1) { break; }
+        if (level[x][y] !== 1) { break; }
         n.edge3++;
-        if (vertLevel[x][y] != -1) { break; }
+        if (vertLevel[x][y] !== -1) { break; }
     }
     x = n.x;
     // Going down.
     while (true) {
         y++;
         if (y > s.rows - 1) { break; }
-        if (level[x][y] != 1) { break; }
+        if (level[x][y] !== 1) { break; }
         n.edge4++;
-        if (vertLevel[x][y] != -1) { break; }
+        if (vertLevel[x][y] !== -1) { break; }
     }
 }
 
@@ -384,25 +382,25 @@ for (var i = 0; i < vertexCount; i++) {
     var y = n.y;
 
     // find n1
-    if (n.edge1 == 0) {
+    if (n.edge1 === 0) {
         n.n1 = -1;
     } else {
         n.n1 = vertLevel[n.x - n.edge1][n.y];
     }
     // find n2
-    if (n.edge2 == 0) {
+    if (n.edge2 === 0) {
         n.n2 = -1;
     } else {
         n.n2 = vertLevel[n.x][n.y - n.edge2];
     }
     // find n3
-    if (n.edge3 == 0) {
+    if (n.edge3 === 0) {
         n.n3 = -1;
     } else {
         n.n3 = vertLevel[n.x + n.edge3][n.y];
     }
     // find n4
-    if (n.edge4 == 0) {
+    if (n.edge4 === 0) {
         n.n4 = -1;
     } else {
         n.n4 = vertLevel[n.x][n.y + n.edge4];
@@ -424,7 +422,6 @@ level[4][9] = 2;
 level[15][3] = 2;
 level[13][7] = 2;
 level[6][5] = 2;
-
 
 //////////////////////////////////////////////////////////////////////////////
 // Pacman Class Declaration
@@ -481,7 +478,7 @@ function Pacman (xIn, yIn) {
         this.x = startX;
         this.y = startY;
         this.attackTimer = 0;
-        if (lives == 0) {
+        if (lives === 0) {
             lives = 3;
             lose();
             return;
@@ -493,38 +490,40 @@ function Pacman (xIn, yIn) {
     this.getNearestNode = function () {
         switch (moveState) {
         case 1:
-            if (x == 0) { return 16; }
+            if (x === 0) { return 16; }
             var tx = Math.ceil(this.x);
             var ty = this.y;
             while (true) {
-                if (vertLevel[tx][ty] != -1) { return vertLevel[tx][ty]; }
+                if (vertLevel[tx][ty] !== -1) {
+                    return vertLevel[tx][ty];
+                }
                 tx -= 1;
             }
             break;
         case 2:
-            if (y == 0) { return 16; }
+            if (y === 0) { return 16; }
             var tx = this.x;
             var ty = Math.ceil(this.y);
             while (true) {
-                if (vertLevel[tx][ty] != -1) { return vertLevel[tx][ty]; }
+                if (vertLevel[tx][ty] !== -1) { return vertLevel[tx][ty]; }
                 ty -= 1;
             }
             break;
         case 3:
-            if (x == s.cols - 1) { return 16; }
+            if (x === s.cols - 1) { return 16; }
             var tx = Math.floor(this.x);
             var ty = this.y;
             while (true) {
-                if (vertLevel[tx][ty] != -1) { return vertLevel[tx][ty]; }
+                if (vertLevel[tx][ty] !== -1) { return vertLevel[tx][ty]; }
                 tx += 1;
             }
             break;
         case 4:
-            if (y == s.rows - 1) { return 16; }
+            if (y === s.rows - 1) { return 16; }
             var tx = this.x;
             var ty = Math.floor(this.y);
             while (true) {
-                if (vertLevel[tx][ty] != -1) { return vertLevel[tx][ty]; }
+                if (vertLevel[tx][ty] !== -1) { return vertLevel[tx][ty]; }
                 ty += 1;
             }
             break;
@@ -562,8 +561,8 @@ function Pacman (xIn, yIn) {
 
     // what to do when collision
     this.collisionAction = function (ghost) {
-        if (ghost.alive == true && this.collisionTest(ghost) == true) {
-            if (pacman.attackTimer == 0) {
+        if (ghost.alive === true && this.collisionTest(ghost) === true) {
+            if (pacman.attackTimer === 0) {
                 this.die();
             } else {
                 pacman.attackTimer = 0;
@@ -593,7 +592,7 @@ function Pacman (xIn, yIn) {
 
         var tempLoc = 30 * (Math.floor(picState / 1.5) % 4);
 
-        if (pacman.attackTimer != 0) {
+        if (pacman.attackTimer !== 0) {
             switch (moveState) {
             case 1:
                 c.drawImage(pic1s, tempLoc, 0, 30, 30, px, py, 30, 30);
@@ -724,7 +723,7 @@ function Ghost (picLoc, id) {
     this.moves = 0;
     this.lastNode = 0;
     this.howManyMoves = 0;
-    this.path = new Array();
+    this.path = [];
 
     // private
     var direction = 0;
@@ -737,7 +736,7 @@ function Ghost (picLoc, id) {
     // functions
     this.render = function () {
     // ghost is in danger
-        if (this.inDanger == true) {
+        if (this.inDanger === true) {
             var tempLoc = 30 * (Math.floor(picGState / 6) % 2);
             var rx = this.x * s.width + s.shiftX;
             var ry = this.y * s.height + s.shiftY;
@@ -745,7 +744,7 @@ function Ghost (picLoc, id) {
             return;
         }
         // if ghost is not in danger
-        if (this.moveState != 0) { var tempLoc = 30 * (Math.floor(picGState / 6) % 2) + (this.moveState - 1) * 2 * 30; } else { var tempLoc = 30 * (Math.floor(picGState / 6) % 2) + (this.lastState - 1) * 2 * 30; }
+        if (this.moveState !== 0) { var tempLoc = 30 * (Math.floor(picGState / 6) % 2) + (this.moveState - 1) * 2 * 30; } else { var tempLoc = 30 * (Math.floor(picGState / 6) % 2) + (this.lastState - 1) * 2 * 30; }
         var rx = this.x * s.width + s.shiftX;
         var ry = this.y * s.height + s.shiftY;
         c.drawImage(pic, tempLoc, 0, 30, 30, rx, ry, 30, 30);
@@ -794,7 +793,6 @@ blueG.chooseLoc(19);
 pinkG.chooseLoc(22);
 orangeG.chooseLoc(34);
 
-
 //////////////////////////////////////////////////////////////////////////////
 // Heart of Program
 //////////////////////////////////////////////////////////////////////////////
@@ -837,16 +835,16 @@ function loadP () {
 function mainLoop () {
     // Logic.
     move();
-    if (redG.alive == true) {
+    if (redG.alive === true) {
         redG.moveGhost(1);
     }
-    if (pinkG.alive == true) {
+    if (pinkG.alive === true) {
         pinkG.moveGhost(2);
     }
-    if (blueG.alive == true) {
+    if (blueG.alive === true) {
         blueG.moveGhost(3);
     }
-    if (orangeG.alive == true) {
+    if (orangeG.alive === true) {
         orangeG.moveGhost(4);
     }
 
@@ -872,9 +870,9 @@ function mainLoop () {
 //////////////////////////////////////  timer
 
 function timer () {
-    if (pacman.attackTimer != 0) {
+    if (pacman.attackTimer !== 0) {
         pacman.attackTimer--;
-        if (pacman.attackTimer == 0) {
+        if (pacman.attackTimer === 0) {
             vel = 0.125;
             redG.inDanger = false;
             pinkG.inDanger = false;
@@ -883,11 +881,10 @@ function timer () {
         }
     }
     clock.time++;
-    if (clock.time == 999) {
+    if (clock.time === 999) {
         clock.time = 989;
     }
 }
-
 
 //////////////////////////////////////////////////////////////////////////////
 // Rendering
@@ -929,16 +926,16 @@ function drawCanvas () {
 
     // draw characters
     // draw ghost
-    if (redG.alive == true) {
+    if (redG.alive === true) {
         redG.render();
     }
-    if (blueG.alive == true) {
+    if (blueG.alive === true) {
         blueG.render();
     }
-    if (pinkG.alive == true) {
+    if (pinkG.alive === true) {
         pinkG.render();
     }
-    if (orangeG.alive == true) {
+    if (orangeG.alive === true) {
         orangeG.render();
     }
 
@@ -994,16 +991,16 @@ function drawChanges () {
 
     // Draw characters.
     // Draw ghost.
-    if (redG.alive == true) {
+    if (redG.alive === true) {
         redG.render();
     }
-    if (blueG.alive == true) {
+    if (blueG.alive === true) {
         blueG.render();
     }
-    if (pinkG.alive == true) {
+    if (pinkG.alive === true) {
         pinkG.render();
     }
-    if (orangeG.alive == true) {
+    if (orangeG.alive === true) {
         orangeG.render();
     }
 
@@ -1017,26 +1014,26 @@ function drawChanges () {
 
 // used to see what box to render
 function drawBox2 (i, j, x, y) {
-    if (level[i][j] == -1) {
+    if (level[i][j] === -1) {
         c.fillRect(x, y, 30, 30);
-    } else if (level[i][j] == 1) {
+    } else if (level[i][j] === 1) {
         c.drawImage(foodPic, x - 4, y - 4);
-    } else if (level[i][j] == 4) {
+    } else if (level[i][j] === 4) {
         c.fillRect(x, y, 30, 30);
-    } else if (level[i][j] == 2) {
+    } else if (level[i][j] === 2) {
         c.drawImage(powerUpPic, x - 4, y - 4);
     }
 }
 
 // used to see what box to display
 function drawBox (i, j, x, y) {
-    if (level[i][j] == -1) {
+    if (level[i][j] === -1) {
         c.drawImage(spacePic, x - 4, y - 4);
-    } else if (level[i][j] == 1) {
+    } else if (level[i][j] === 1) {
         c.drawImage(foodPic, x - 4, y - 4);
-    } else if (level[i][j] == 4) {
+    } else if (level[i][j] === 4) {
         c.drawImage(spacePic, x - 4, y - 4);
-    } else if (level[i][j] == 2) {
+    } else if (level[i][j] === 2) {
         c.drawImage(powerUpPic, x - 4, y - 4);
     }
 }
@@ -1063,7 +1060,7 @@ function drawBottom () {
     c.fillStyle = 'rgba(255,255, 255,1)';
 
     // add start buttons
-    if (startReset.start == true) {
+    if (startReset.start === true) {
         c.drawImage(startPic, startReset.x, startReset.y);
     } else {
         c.drawImage(resetPic, startReset.x, startReset.y);
@@ -1190,11 +1187,11 @@ function move () {
         switch (nextState) {
         case 1:
         // don't move on non int value
-            if (y % 1 != 0) {
+            if (y % 1 !== 0) {
                 break;
             }
             // changing from right to left
-            if (x % 1 != 0) {
+            if (x % 1 !== 0) {
                 pacman.x -= vel;
                 moveState = nextState;
                 return;
@@ -1210,11 +1207,11 @@ function move () {
 
         case 2:
         // don't move on non int value
-            if (x % 1 != 0) {
+            if (x % 1 !== 0) {
                 break;
             }
             // changing from right to left
-            if (y % 1 != 0) {
+            if (y % 1 !== 0) {
                 pacman.y -= vel;
                 moveState = nextState;
                 return;
@@ -1230,11 +1227,11 @@ function move () {
 
         case 3:
         // don't move on non int value
-            if (y % 1 != 0) {
+            if (y % 1 !== 0) {
                 break;
             }
             // changing from right to left
-            if (x % 1 != 0) {
+            if (x % 1 !== 0) {
                 pacman.x += vel;
                 moveState = nextState;
                 return;
@@ -1250,11 +1247,11 @@ function move () {
 
         case 4:
         // don't move on non int value
-            if (x % 1 != 0) {
+            if (x % 1 !== 0) {
                 break;
             }
             // changing from right to left
-            if (y % 1 != 0) {
+            if (y % 1 !== 0) {
                 pacman.y += vel;
                 moveState = nextState;
                 return;
@@ -1270,16 +1267,16 @@ function move () {
         }
     }
 
-    if (moveState == 0) { return; }
+    if (moveState === 0) { return; }
 
     // testing if pacman can still move
     switch (moveState) {
     // a pressed
     case 1:
-        if (x % 1 != 0) {
+        if (x % 1 !== 0) {
             pacman.x -= vel;
             return;
-        } else if (xd == 0) {
+        } else if (xd === 0) {
             if (x - vel >= 0) {
                 pacman.x -= vel;
             } else {
@@ -1298,7 +1295,7 @@ function move () {
 
         // w pressed
     case 2:
-        if (y % 1 != 0) {
+        if (y % 1 !== 0) {
             pacman.y -= vel;
             return;
         }
@@ -1313,11 +1310,11 @@ function move () {
 
         // d pressed
     case 3:
-        if (x % 1 != 0) {
+        if (x % 1 !== 0) {
             pacman.x += vel;
             return;
         }
-        if (xu == s.cols - 1) {
+        if (xu === s.cols - 1) {
         // added for array
             eatFood();
 
@@ -1339,7 +1336,7 @@ function move () {
 
         // s pressed
     case 4:
-        if (y % 1 != 0) {
+        if (y % 1 !== 0) {
             pacman.y += vel;
             return;
         }
@@ -1362,26 +1359,26 @@ function move () {
 // test if teleport
 function testIfTeleport (x, y) {
     // see if teleport
-    if (x == 0 || y == 0 || y == s.rows - 1 || x == s.cols - 1) {
-        if (y == 9 && moveState == 1) {
+    if (x === 0 || y === 0 || y === s.rows - 1 || x === s.cols - 1) {
+        if (y === 9 && moveState === 1) {
             teleportSound.play();
             pacman.x = s.cols - 1;
             pacman.y = 3;
             nextState = 1;
             moveState = 1;
-        } else if (x == 4 && moveState == 2) {
+        } else if (x === 4 && moveState === 2) {
             teleportSound.play();
             pacman.x = 15;
             pacman.y = s.rows - 1;
             nextState = 2;
             moveState = 2;
-        } else if (y == 3 && moveState == 3) {
+        } else if (y === 3 && moveState === 3) {
             teleportSound.play();
             pacman.x = 0;
             pacman.y = 9;
             nextState = 3;
             moveState = 3;
-        } else if (x == 15 && moveState == 4) {
+        } else if (x === 15 && moveState === 4) {
             teleportSound.play();
             pacman.x = 4;
             pacman.y = 0;
@@ -1412,7 +1409,7 @@ function eatFood () {
         break;
     }
 
-    if (level[x1][y1] == 1) {
+    if (level[x1][y1] === 1) {
         level[x1][y1] = 4;
         foodCount--;
         s.score += 1;
@@ -1421,14 +1418,14 @@ function eatFood () {
         if (foodCount < 0) {
             winning();
         }
-    } else if (level[x1][y1] == 2) {
+    } else if (level[x1][y1] === 2) {
         level[x1][y1] = 4;
         pacman.attackTimer = 5;
         vel = 0.25;
-        if (pacman.x * 4 % 1 != 0) {
+        if (pacman.x * 4 % 1 !== 0) {
             pacman.x += 0.125;
         }
-        if (pacman.y * 4 % 1 != 0) {
+        if (pacman.y * 4 % 1 !== 0) {
             pacman.y += 0.125;
         }
 
@@ -1440,7 +1437,6 @@ function eatFood () {
         powerUpSound.play();
     }
 }
-
 
 //////////////////////////////////////////////////////////////////////////////
 // Moving For Ghost.
@@ -1461,17 +1457,17 @@ Ghost.prototype.moveGhost = function (gID) {
             this.moveMe();
         } else {
             this.howManyMoves++;
-            if (this.howManyMoves == gID + 1) {
+            if (this.howManyMoves === gID + 1) {
                 this.howManyMoves = 0;
                 path = [];
             }
 
-            if (this.path.length == 0) {
+            if (this.path.length === 0) {
                 // calculate next several moves
                 this.calculateMoves(gID);
 
                 // could be zero moves
-                if (this.path.length == 0) {
+                if (this.path.length === 0) {
                     return;
                 }
 
@@ -1495,16 +1491,16 @@ Ghost.prototype.moveGhost = function (gID) {
 Ghost.prototype.getMandD = function () {
     // calulate moves direction
     var next = vertices[this.path[this.path.length - 1]];
-    if (next.n1 != -1 && next.n1 == this.lastNode) {
+    if (next.n1 !== -1 && next.n1 === this.lastNode) {
         this.moves = vertices[next.n1].edge3 / velG;
         this.direction = 3;
-    } else if (next.n2 != -1 && next.n2 == this.lastNode) {
+    } else if (next.n2 !== -1 && next.n2 === this.lastNode) {
         this.moves = vertices[next.n2].edge4 / velG;
         this.direction = 4;
-    } else if (next.n3 != -1 && next.n3 == this.lastNode) {
+    } else if (next.n3 !== -1 && next.n3 === this.lastNode) {
         this.moves = vertices[next.n3].edge1 / velG;
         this.direction = 1;
-    } else if (next.n4 != -1 && next.n4 == this.lastNode) {
+    } else if (next.n4 !== -1 && next.n4 === this.lastNode) {
         this.moves = vertices[next.n4].edge2 / velG;
         this.direction = 2;
     }
@@ -1549,7 +1545,7 @@ Ghost.prototype.getRandomMove = function (gID) {
             break;
         }
 
-        if (lastDir != tryThis && wholeVal != 0) {
+        if (lastDir != tryThis && wholeVal !== 0) {
             break;
         }
     }
@@ -1596,12 +1592,12 @@ Ghost.prototype.calculateMoves = function (gID) {
     vertices[current].value = 0;
 
     for (var i = 0; i < vertexCount; i++) {
-        if (current == nearestNode) { break; }
+        if (current === nearestNode) { break; }
 
         // see which node testing
         var n = vertices[current];
 
-        if (n.n1 != -1 && vertices[n.n1].visited == false) {
+        if (n.n1 !== -1 && vertices[n.n1].visited === false) {
             var n1 = vertices[n.n1];
             if (n.value + n.edge1 < n1.value) {
                 n1.value = n.value + n.edge1;
@@ -1609,7 +1605,7 @@ Ghost.prototype.calculateMoves = function (gID) {
             }
             set.add(n.n1);
         }
-        if (n.n2 != -1 && vertices[n.n2].visited == false) {
+        if (n.n2 !== -1 && vertices[n.n2].visited === false) {
             var n2 = vertices[n.n2];
             if (n.value + n.edge2 < n2.value) {
                 n2.value = n.value + n.edge2;
@@ -1617,7 +1613,7 @@ Ghost.prototype.calculateMoves = function (gID) {
             }
             set.add(n.n2);
         }
-        if (n.n3 != -1 && vertices[n.n3].visited == false) {
+        if (n.n3 !== -1 && vertices[n.n3].visited === false) {
             var n3 = vertices[n.n3];
             if (n.value + n.edge3 < n3.value) {
                 n3.value = n.value + n.edge3;
@@ -1625,7 +1621,7 @@ Ghost.prototype.calculateMoves = function (gID) {
             }
             set.add(n.n3);
         }
-        if (n.n4 != -1 && vertices[n.n4].visited == false) {
+        if (n.n4 !== -1 && vertices[n.n4].visited === false) {
             var n4 = vertices[n.n4];
             if (n.value + n.edge4 < n4.value) {
                 n4.value = n.value + n.edge4;
@@ -1653,7 +1649,7 @@ Ghost.prototype.calculateMoves = function (gID) {
     // now to trace back
     var itter = nearestNode;
     while (true) {
-        if (itter == this.lastNode) { break; }
+        if (itter === this.lastNode) { break; }
         this.path.push(itter);
         itter = vertices[itter].parent;
     }
@@ -1683,23 +1679,23 @@ Ghost.prototype.testIfTeleportG = function () {
     var x = this.x;
     var y = this.y;
     // see if teleport
-    if (x == 0 || y == 0 || y == s.rows - 1 || x == s.cols - 1) {
-        if (y == 9 && this.moveState == 1) {
+    if (x === 0 || y === 0 || y === s.rows - 1 || x === s.cols - 1) {
+        if (y === 9 && this.moveState === 1) {
             this.x = s.cols - 1;
             this.y = 3;
             this.nextState = 1;
             this.moveState = 1;
-        } else if (x == 4 && this.moveState == 2) {
+        } else if (x === 4 && this.moveState === 2) {
             this.x = 15;
             this.y = s.rows - 1;
             this.nextState = 2;
             this.moveState = 2;
-        } else if (y == 3 && this.moveState == 3) {
+        } else if (y === 3 && this.moveState === 3) {
             this.x = 0;
             this.y = 9;
             this.nextState = 3;
             this.moveState = 3;
-        } else if (x == 15 && this.moveState == 4) {
+        } else if (x === 15 && this.moveState === 4) {
             this.x = 4;
             this.y = 0;
             this.nextState = 4;
@@ -1707,7 +1703,6 @@ Ghost.prototype.testIfTeleportG = function () {
         }
     }
 };
-
 
 //////////////////////////////////////////////////////////////////////////////
 // Ghost Pacman Collision.
@@ -1721,7 +1716,6 @@ function collision (boundary, x, y) {
 
     return true;
 }
-
 
 //////////////////////////////////////////////////////////////////////////////
 // Mouse / Keyboard.
@@ -1743,8 +1737,8 @@ function mouseInput (e) {
     mY = pos.y - s.shiftY;
 
     // see if click on button
-    if (collision(startReset, pos.x, pos.y) == true) {
-        if (startReset.start == true) {
+    if (collision(startReset, pos.x, pos.y) === true) {
+        if (startReset.start === true) {
             clock.id = setInterval(timer, 1000);
             clock.time++;
             mainId = setInterval(mainLoop, 33);
@@ -1764,8 +1758,8 @@ function mouseInput (e) {
 
 function keyboardInput (e) {
     // start game with button or by pressing "m"
-    // if (e.keyCode == 77) {
-    // if (startReset.start == true) {
+    // if (e.keyCode === 77) {
+    // if (startReset.start === true) {
     // console.log('Start Game');
     // clock.id = setInterval(timer, 1000);
     // clock.time++;
@@ -1785,7 +1779,7 @@ function keyboardInput (e) {
     // }
 
     // see if game has started
-    if (startReset.start == true) {
+    if (startReset.start === true) {
         return;
     }
 
