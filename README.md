@@ -8,4 +8,4 @@ npm install
 node_modules/.bin/eslint pacman.js --fix
 
 # Launch website with:
-node_modules/.bin/ws --spa pacman.html
+node_modules/.bin/ws --spa index.html
